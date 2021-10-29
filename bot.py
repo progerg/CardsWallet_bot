@@ -67,6 +67,30 @@ async def message_handler(message: types.Message, state: FSMContext):
         await message.answer(msg, reply_markup=await main(message.from_user.language_code))
 
 
+@dp.message_handler(commands='add_shop', state='*')
+async def message_handler(message: types.Message, state: FSMContext):
+    if str(message.from_user.id) in config['Bot']['admin'].split(';'):
+        data = message.text.split()
+        async with create_session() as sess:
+            shop = Shops()
+            shop.ru_name = data[1]
+            shop.en_name = data[2]
+            sess.add(shop)
+            await sess.commit()
+
+
+@dp.message_handler(commands='delete_shop', state='*')
+async def message_handler(message: types.Message, state: FSMContext):
+    if str(message.from_user.id) in config['Bot']['admin'].split(';'):
+        data = message.text.split()
+        async with create_session() as sess:
+            result = await sess.execute(select(Shops).where(Shops.ru_name == data[1]))
+            shop = result.scalars().first()
+            if shop:
+                await sess.delete(shop)
+                await sess.commit()
+
+
 @dp.message_handler(state=Main.main)
 async def message_handler(message: types.Message, state: FSMContext):
     if message.text == BUTTONS[message.from_user.language_code]['main']['1']:
@@ -105,11 +129,19 @@ async def message_handler(message: types.Message, state: FSMContext):
 
 @dp.message_handler(state=AddCard.name)
 async def message_handler(message: types.Message, state: FSMContext):
-    msg = MESSAGES[message.from_user.language_code]['create']['2'].replace('{first_name}', message.from_user.first_name)
-    await AddCard.photo.set()
-    async with state.proxy() as data:
-        data['name'] = message.text
-    await message.answer(msg, reply_markup=types.ReplyKeyboardRemove())
+    if message.text == BUTTONS[message.from_user.language_code]['main']['3']:
+        msg = MESSAGES[message.from_user.language_code]['main']['1']
+        await Main.main.set()
+        await message.answer(msg, reply_markup=await main(message.from_user.language_code))
+    elif message.text == BUTTONS[message.from_user.language_code]['my_cards']['3']:
+        msg = MESSAGES[message.from_user.language_code]['my_cards']['5']
+        await message.answer(msg, reply_markup=await return_button(message.from_user.language_code))
+    else:
+        msg = MESSAGES[message.from_user.language_code]['create']['2'].replace('{first_name}', message.from_user.first_name)
+        await AddCard.photo.set()
+        async with state.proxy() as data:
+            data['name'] = message.text
+        await message.answer(msg, reply_markup=await return_button(message.from_user.language_code))
 
 
 @dp.message_handler(state=AddCard.photo, content_types=['photo'])
@@ -141,7 +173,15 @@ async def message_handler(message: types.Message, state: FSMContext):
         await message.answer(msg, reply_markup=await my_cards_reply_markup(message.from_user.language_code))
     else:
         msg = MESSAGES[message.from_user.language_code]['create']['5']
-        await message.answer(msg)
+        await message.answer(msg, reply_markup=await return_button())
+
+
+@dp.message_handler(state=AddCard.photo)
+async def message_handler(message: types.Message, state: FSMContext):
+    if message.text == BUTTONS[message.from_user.language_code]['main']['3']:
+        msg = MESSAGES[message.from_user.language_code]['main']['1']
+        await Main.main.set()
+        await message.answer(msg, reply_markup=await main(message.from_user.language_code))
 
 
 @dp.message_handler(state=AddCard.photo, content_types=['document', 'audio', 'video'])

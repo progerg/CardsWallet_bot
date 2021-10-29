@@ -55,6 +55,8 @@ async def shop_list(language, shops) -> ReplyKeyboardMarkup:
 
     keyboard_markup = ReplyKeyboardMarkup(resize_keyboard=True, row_width=4)
     keyboard_markup.add(*buttons)
+    button_2 = KeyboardButton(BUTTONS[language]['my_cards']['3'])
     button_1 = KeyboardButton(BUTTONS[language]["main"]["3"])
+    keyboard_markup.row(button_2)
     keyboard_markup.row(button_1)
     return keyboard_markup
