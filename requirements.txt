@@ -1,0 +1,9 @@
+sqlalchemy~=1.4.26
+aiogram~=2.15
+aioschedule~=0.5.2
+sqlalchemy-serializer~=1.4.1
+pyzbar-x~=0.2.1
+Pillow~=8.4.0
+python-barcode~=0.13.1
+qrcode~=7.3.1
+aiomysql~=0.0.21
