@@ -1,5 +1,4 @@
 from pyzbar.pyzbar import decode
-import cv2
 from PIL import Image
 import io
 import barcode
@@ -21,7 +20,6 @@ async def decode_image(data):
 
 
 async def create_new_code(decoded):
-    print(decoded)
     if decoded.type != "QRCODE":
         TYPE = barcode.get_barcode_class(decoded.type.lower())
         ready_code = TYPE(decoded.data.decode('UTF-8'), writer=ImageWriter())
