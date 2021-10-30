@@ -166,7 +166,8 @@ async def message_handler(message: types.Message, state: FSMContext):
         async with create_session() as sess:
             res = await sess.execute(select(User).where(User.user_id == message.from_user.id))
             user = res.scalars().first()
-            await user.add_card(data['name'], msg_2.photo[len(msg_2.photo) - 1].file_id, message.photo[2].file_id)
+            await user.add_card(data['name'], msg_2.photo[len(msg_2.photo) - 1].file_id,
+                                message.photo[len(message.photo) - 1].file_id)
             await sess.commit()
 
         await state.finish()
