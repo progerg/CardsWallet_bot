@@ -103,9 +103,9 @@ async def message_handler(message: types.Message, state: FSMContext):
         # await message.answer(msg)
         msg = MESSAGES[message.from_user.language_code]['my_cards']['2']
         await message.answer(msg, reply_markup=await my_cards_reply_markup(message.from_user.language_code))
-    elif message.text == BUTTONS[message.from_user.language_code]['main']['2']:
-        msg = MESSAGES[message.from_user.language_code]['feedback']['1']
-        await message.answer(msg, reply_markup=await return_button(message.from_user.language_code))
+    # elif message.text == BUTTONS[message.from_user.language_code]['main']['2']:
+    #     msg = MESSAGES[message.from_user.language_code]['feedback']['1']
+    #     await message.answer(msg, reply_markup=await return_button(message.from_user.language_code))
     elif message.text == BUTTONS[message.from_user.language_code]['main']['3']:
         msg = MESSAGES[message.from_user.language_code]['main']['1']
         await Main.main.set()
@@ -146,15 +146,19 @@ async def message_handler(message: types.Message, state: FSMContext):
 
 @dp.message_handler(state=AddCard.photo, content_types=['photo'])
 async def message_handler(message: types.Message, state: FSMContext):
+    await MyCards.main.set()
+    async with state.proxy() as data:
+        shop_name = data['name']
+
     filenames = next(os.walk('for_temp_img/photos'), (None, None, []))[2]
     await message.photo[len(message.photo) - 1].download(destination_dir='for_temp_img')
     filenames_2 = next(os.walk('for_temp_img/photos'), (None, None, []))[2]
     last_name = list(set(filenames_2) - set(filenames))[0]
-    async with state.proxy() as data:
-        shop_name = data['name']
+
     with open(f'for_temp_img/photos/{last_name}', 'rb') as f:
         result = await do_work(f.read())
     os.remove(f'for_temp_img/photos/{last_name}')
+
     if result:
         msg = MESSAGES[message.from_user.language_code]['create']['3']
         msg_2 = await message.answer_photo(photo=result, caption=msg)
@@ -165,6 +169,7 @@ async def message_handler(message: types.Message, state: FSMContext):
             await user.add_card(data['name'], msg_2.photo[len(msg_2.photo) - 1].file_id, message.photo[2].file_id)
             await sess.commit()
 
+        await state.finish()
         await MyCards.main.set()
         msg = MESSAGES[message.from_user.language_code]['my_cards']['1']
         await message.answer(msg, reply_markup=await my_cards_inline_markup(message.from_user.language_code, user))
@@ -172,6 +177,7 @@ async def message_handler(message: types.Message, state: FSMContext):
         msg = MESSAGES[message.from_user.language_code]['my_cards']['2']
         await message.answer(msg, reply_markup=await my_cards_reply_markup(message.from_user.language_code))
     else:
+        await AddCard.photo.set()
         msg = MESSAGES[message.from_user.language_code]['create']['5']
         await message.answer(msg, reply_markup=await return_button(message.from_user.language_code))
 
@@ -223,22 +229,22 @@ async def code(callback_query: types.CallbackQuery):
                                reply_markup=await my_cards_reply_markup(callback_query.from_user.language_code))
 
 
-async def example():
-    pass
-
-
-async def scheduler():
-    aioschedule.every(5).minutes.do(example)
-    # aioschedule.every(30).seconds.do(send_test_message)
-    while True:
-        await aioschedule.run_pending()
-        await asyncio.sleep(1)
+# async def example():
+#     pass
+#
+#
+# async def scheduler():
+#     aioschedule.every(5).minutes.do(example)
+#     # aioschedule.every(30).seconds.do(send_test_message)
+#     while True:
+#         await aioschedule.run_pending()
+#         await asyncio.sleep(1)
 
 
 async def startup_(_):
     await global_init(user=config['DB']['login'], password=config['DB']['password'],
                       host=config['DB']['host'], port=config['DB']['port'], dbname=config['DB']['db_name'])
-    asyncio.create_task(scheduler())
+    # asyncio.create_task(scheduler())
 
 
 async def shutdown(dispatcher: Dispatcher):

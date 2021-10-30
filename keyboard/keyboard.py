@@ -4,10 +4,9 @@ from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardMar
 
 async def main(language) -> ReplyKeyboardMarkup:
     button_1 = KeyboardButton(BUTTONS[language]["main"]["1"])
-    button_2 = KeyboardButton(BUTTONS[language]["main"]["2"])
 
     keyboard_markup = ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard_markup.row(button_1, button_2)
+    keyboard_markup.row(button_1)
     return keyboard_markup
 
 
