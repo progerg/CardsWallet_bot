@@ -79,6 +79,18 @@ async def message_handler(message: types.Message, state: FSMContext):
             await sess.commit()
 
 
+@dp.message_handler(commands='mail', state='*')
+async def message_handler(message: types.Message, state: FSMContext):
+    if str(message.from_user.id) in config['Bot']['admin'].split(';'):
+        data = message.text.split()[1:]
+        data = ' '.join(data)
+        async with create_session() as sess:
+            result = await sess.execute(select(User))
+            users = result.scalars().all()
+        for user in users:
+            await bot.send_message(chat_id=user.user_id, text=data)
+
+
 @dp.message_handler(commands='delete_shop', state='*')
 async def message_handler(message: types.Message, state: FSMContext):
     if str(message.from_user.id) in config['Bot']['admin'].split(';'):
@@ -158,7 +170,6 @@ async def message_handler(message: types.Message, state: FSMContext):
     with open(f'for_temp_img/photos/{last_name}', 'rb') as f:
         result = await do_work(f.read())
     os.remove(f'for_temp_img/photos/{last_name}')
-
     if result:
         msg = MESSAGES[message.from_user.language_code]['create']['3']
         msg_2 = await message.answer_photo(photo=result, caption=msg)
