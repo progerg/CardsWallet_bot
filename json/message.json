@@ -9,23 +9,23 @@
     },
 
     "my_cards": {
-      "1": "Ниже представлен список карт, которые вы добавили в бот",
-      "2": "Для добавления новой карты нажмите на кнопку ниже",
+      "1": "⬇️Ниже представлен список карт, которые вы добавили в бот",
+      "2": "👇Для добавления новой карты нажмите на кнопку ниже",
       "3": "\uD83D\uDC46 Покажи свой код на кассе\nКарточка магазина {shop}",
-      "4": "Ваша карта {shop} успешно удалена",
+      "4": "❗️Ваша карта {shop} успешно удалена",
       "5": "Введите название своего магазина"
     },
 
     "create": {
-      "1": "Выберите из списка ниже название магазина, чью карту вы хотите добавить. Если среди магазинов нет вашего, то введите свое название (можно использовать эмодзи)",
-      "2": "Отлично, {first_name}. Осталось всего лишь отправить фото карты, со стороны штрих или qr кода",
-      "3": "Карта успешно добавлена. Вы можете воспользоваться ею в разделе \"Мои карты\"",
-      "4": "Отправьте пожалуйста фото в сжатом виде, поставив галочку",
-      "5": "К сожалению мы не смогли распознать qr код на фото, попробуйте ещё"
+      "1": "⬇️Выберите из списка ниже название магазина, чью карту вы хотите добавить. Если среди магазинов нет вашего, то введите свое название (можно использовать эмодзи)",
+      "2": "🎉Отлично, {first_name}. Осталось всего лишь отправить фото карты, со стороны штрих или qr кода",
+      "3": "🛍Карта успешно добавлена. Вы можете воспользоваться ею в разделе \"Мои карты\"",
+      "4": "📎Отправьте пожалуйста фото в сжатом виде, поставив галочку",
+      "5": "😔К сожалению мы не смогли распознать qr код на фото, попробуйте ещё"
     },
 
     "feedback": {
-      "1": "По любым вопросам, связанными с работой бота, вы можете написать нам в поддержку @SupMyShopCards_bot"
+      "1": "👉По любым вопросам, связанными с работой бота, вы можете написать нам в поддержку @SupMyShopCards_bot"
     }
   },
 
@@ -39,22 +39,22 @@
     },
 
     "my_cards": {
-      "1": "Below is a list of the cards that you added to the bot",
-      "2": "To add a new card, click on the button below",
+      "1": "⬇️Below is a list of the cards that you added to the bot",
+      "2": "👇To add a new card, click on the button below",
       "3": "\uD83D\uDC46 Show your code at the checkout\nShop card of shop {shop}",
-      "4": "Your card of {shop} has been successfully removed"
+      "4": "❗️Your card of {shop} has been successfully removed"
     },
 
     "create": {
-      "1": "Select from the list below the name of the store whose card you want to add. If your store is not among the stores, then enter your name (you can use emoji)",
-      "2": "Great, {first_name}. It remains only to send a photo of the card, from the side of the barcode or QR code",
-      "3": "The card has been successfully added. You can use it in the \"My cards\" section",
-      "4": "Please send a compressed photo by ticking",
-      "5": "Unfortunately, we could not recognize the QR code in the photo, try again"
+      "1": "мSelect from the list below the name of the store whose card you want to add. If your store is not among the stores, then enter your name (you can use emoji)",
+      "2": "🎉Great, {first_name}. It remains only to send a photo of the card, from the side of the barcode or QR code",
+      "3": "🛍The card has been successfully added. You can use it in the \"My cards\" section",
+      "4": "📎Please send a compressed photo by ticking",
+      "5": "😔Unfortunately, we could not recognize the QR code in the photo, try again"
     },
 
     "feedback": {
-      "1": "For any questions related to the work of the bot, you can write to us in support @SupMyShopCardsBot"
+      "1": "👉For any questions related to the work of the bot, you can write to us in support @SupMyShopCardsBot"
     }
   }
 }
