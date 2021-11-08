@@ -20,11 +20,8 @@ async def return_button(language) -> ReplyKeyboardMarkup:
 
 async def my_cards_reply_markup(language) -> ReplyKeyboardMarkup:
     button_1 = KeyboardButton(BUTTONS[language]["my_cards"]["1"])
-    button_2 = KeyboardButton(BUTTONS[language]["main"]["3"])
-
     keyboard_markup = ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard_markup.row(button_1)
-    keyboard_markup.row(button_2)
     return keyboard_markup
 
 

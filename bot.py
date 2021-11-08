@@ -32,10 +32,6 @@ with open('json/button.json') as f:
     BUTTONS = json.load(f)
 
 
-class Main(StatesGroup):
-    main = State()
-
-
 class MyCards(StatesGroup):
     main = State()
 
@@ -61,10 +57,14 @@ async def message_handler(message: types.Message, state: FSMContext):
                 pass
             sess.add(user)
             await sess.commit()
-        else:
-            msg = MESSAGES[message.from_user.language_code]['main']['1']
-        await Main.main.set()
-        await message.answer(msg, reply_markup=await main(message.from_user.language_code))
+        async with create_session() as sess:
+            res = await sess.execute(select(User).where(User.user_id == message.from_user.id))
+            user = res.scalars().first()
+        await MyCards.main.set()
+        msg = MESSAGES[message.from_user.language_code]['my_cards']['1']
+        await message.answer(msg, reply_markup=await my_cards_inline_markup(message.from_user.language_code, user))
+        msg = MESSAGES[message.from_user.language_code]['my_cards']['2']
+        await message.answer(msg, reply_markup=await my_cards_reply_markup(message.from_user.language_code))
 
 
 @dp.message_handler(commands='add_shop', state='*')
@@ -103,33 +103,17 @@ async def message_handler(message: types.Message, state: FSMContext):
                 await sess.commit()
 
 
-@dp.message_handler(state=Main.main)
+@dp.message_handler(state=MyCards.main)
 async def message_handler(message: types.Message, state: FSMContext):
-    if message.text == BUTTONS[message.from_user.language_code]['main']['1']:
+    if message.text == BUTTONS[message.from_user.language_code]['main']['3']:
         async with create_session() as sess:
             res = await sess.execute(select(User).where(User.user_id == message.from_user.id))
             user = res.scalars().first()
         await MyCards.main.set()
         msg = MESSAGES[message.from_user.language_code]['my_cards']['1']
         await message.answer(msg, reply_markup=await my_cards_inline_markup(message.from_user.language_code, user))
-        # await message.answer(msg)
         msg = MESSAGES[message.from_user.language_code]['my_cards']['2']
         await message.answer(msg, reply_markup=await my_cards_reply_markup(message.from_user.language_code))
-    # elif message.text == BUTTONS[message.from_user.language_code]['main']['2']:
-    #     msg = MESSAGES[message.from_user.language_code]['feedback']['1']
-    #     await message.answer(msg, reply_markup=await return_button(message.from_user.language_code))
-    elif message.text == BUTTONS[message.from_user.language_code]['main']['3']:
-        msg = MESSAGES[message.from_user.language_code]['main']['1']
-        await Main.main.set()
-        await message.answer(msg, reply_markup=await main(message.from_user.language_code))
-
-
-@dp.message_handler(state=MyCards.main)
-async def message_handler(message: types.Message, state: FSMContext):
-    if message.text == BUTTONS[message.from_user.language_code]['main']['3']:
-        msg = MESSAGES[message.from_user.language_code]['main']['1']
-        await Main.main.set()
-        await message.answer(msg, reply_markup=await main(message.from_user.language_code))
     elif message.text == BUTTONS[message.from_user.language_code]['my_cards']['1']:
         msg = MESSAGES[message.from_user.language_code]['create']['1']
         await AddCard.name.set()
@@ -142,9 +126,14 @@ async def message_handler(message: types.Message, state: FSMContext):
 @dp.message_handler(state=AddCard.name)
 async def message_handler(message: types.Message, state: FSMContext):
     if message.text == BUTTONS[message.from_user.language_code]['main']['3']:
-        msg = MESSAGES[message.from_user.language_code]['main']['1']
-        await Main.main.set()
-        await message.answer(msg, reply_markup=await main(message.from_user.language_code))
+        async with create_session() as sess:
+            res = await sess.execute(select(User).where(User.user_id == message.from_user.id))
+            user = res.scalars().first()
+        await MyCards.main.set()
+        msg = MESSAGES[message.from_user.language_code]['my_cards']['1']
+        await message.answer(msg, reply_markup=await my_cards_inline_markup(message.from_user.language_code, user))
+        msg = MESSAGES[message.from_user.language_code]['my_cards']['2']
+        await message.answer(msg, reply_markup=await my_cards_reply_markup(message.from_user.language_code))
     elif message.text == BUTTONS[message.from_user.language_code]['my_cards']['3']:
         msg = MESSAGES[message.from_user.language_code]['my_cards']['5']
         await message.answer(msg, reply_markup=await return_button(message.from_user.language_code))
@@ -185,7 +174,6 @@ async def message_handler(message: types.Message, state: FSMContext):
         await MyCards.main.set()
         msg = MESSAGES[message.from_user.language_code]['my_cards']['1']
         await message.answer(msg, reply_markup=await my_cards_inline_markup(message.from_user.language_code, user))
-        # await message.answer(msg)
         msg = MESSAGES[message.from_user.language_code]['my_cards']['2']
         await message.answer(msg, reply_markup=await my_cards_reply_markup(message.from_user.language_code))
     else:
@@ -197,9 +185,14 @@ async def message_handler(message: types.Message, state: FSMContext):
 @dp.message_handler(state=AddCard.photo)
 async def message_handler(message: types.Message, state: FSMContext):
     if message.text == BUTTONS[message.from_user.language_code]['main']['3']:
-        msg = MESSAGES[message.from_user.language_code]['main']['1']
-        await Main.main.set()
-        await message.answer(msg, reply_markup=await main(message.from_user.language_code))
+        async with create_session() as sess:
+            res = await sess.execute(select(User).where(User.user_id == message.from_user.id))
+            user = res.scalars().first()
+        await MyCards.main.set()
+        msg = MESSAGES[message.from_user.language_code]['my_cards']['1']
+        await message.answer(msg, reply_markup=await my_cards_inline_markup(message.from_user.language_code, user))
+        msg = MESSAGES[message.from_user.language_code]['my_cards']['2']
+        await message.answer(msg, reply_markup=await my_cards_reply_markup(message.from_user.language_code))
 
 
 @dp.message_handler(state=AddCard.photo, content_types=['document', 'audio', 'video'])
@@ -241,22 +234,9 @@ async def code(callback_query: types.CallbackQuery):
                                reply_markup=await my_cards_reply_markup(callback_query.from_user.language_code))
 
 
-# async def example():
-#     pass
-#
-#
-# async def scheduler():
-#     aioschedule.every(5).minutes.do(example)
-#     # aioschedule.every(30).seconds.do(send_test_message)
-#     while True:
-#         await aioschedule.run_pending()
-#         await asyncio.sleep(1)
-
-
 async def startup_(_):
     await global_init(user=config['DB']['login'], password=config['DB']['password'],
                       host=config['DB']['host'], port=config['DB']['port'], dbname=config['DB']['db_name'])
-    # asyncio.create_task(scheduler())
 
 
 async def shutdown(dispatcher: Dispatcher):
