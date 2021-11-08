@@ -67,6 +67,12 @@ async def message_handler(message: types.Message, state: FSMContext):
         await message.answer(msg, reply_markup=await my_cards_reply_markup(message.from_user.language_code))
 
 
+@dp.message_handler(commands='support', state='*')
+async def message_handler(message: types.Message, state: FSMContext):
+    msg = MESSAGES[message.from_user.language_code]['feedback']['1']
+    await message.answer(msg)
+
+
 @dp.message_handler(commands='add_shop', state='*')
 async def message_handler(message: types.Message, state: FSMContext):
     if str(message.from_user.id) in config['Bot']['admin'].split(';'):
